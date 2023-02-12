@@ -38,7 +38,7 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         children: [
           const MapScreen(),
-          if (_isThreatsSelectionMenuOpen) Positioned(
+          if (_isThreatsSelectionMenuOpen) const Positioned(
             bottom: 0,
             left: 0,
             child: ThreatMainCategoryMenu(),
