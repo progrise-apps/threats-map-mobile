@@ -1,5 +1,4 @@
-import 'dart:math';
-
+import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -50,4 +49,49 @@ class _MapScreenState extends State<MapScreen> {
       },
     );
   }
+}
+
+void main() {
+  testWidgets('MapScreen has correct initial state', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(
+      home: MapScreen(),
+    ));
+
+    expect(find.byType(GoogleMap), findsOneWidget);
+
+    expect(find.byType(_MapScreenState), findsOneWidget);
+    final _MapScreenState state = tester.state(find.byType(_MapScreenState));
+
+    expect(state.mapController, isNull);
+    expect(state.markers, hasLength(1));
+    expect(state.showLocation, const LatLng(50.270908, 19.039993));
+    expect(state.defaultZoom, 18.0);
+  });
+
+  testWidgets('GoogleMap displays correct initial camera position', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(
+      home: MapScreen(),
+    ));
+
+    final GoogleMap map = tester.widget(find.byType(GoogleMap));
+
+    expect(map.initialCameraPosition.target, const LatLng(50.270908, 19.039993));
+    expect(map.initialCameraPosition.zoom, 18.0);
+  });
+
+  testWidgets('GoogleMap displays correct markers', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(
+      home: MapScreen(),
+    ));
+
+    final GoogleMap map = tester.widget(find.byType(GoogleMap));
+
+    expect(map.markers, hasLength(1));
+    final Marker marker = map.markers.first;
+    expect(marker.markerId.value, 'LatLng(50.270908, 19.039993)');
+    expect(marker.position, const LatLng(50.270908, 19.039993));
+    expect(marker.infoWindow.title, 'My Custom Title ');
+    expect(marker.infoWindow.snippet, 'My Custom Subtitle');
+    expect(marker.icon, BitmapDescriptor.defaultMarker);
+  });
 }

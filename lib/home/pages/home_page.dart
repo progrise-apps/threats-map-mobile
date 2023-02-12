@@ -1,5 +1,5 @@
 import 'dart:math';
-
+import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:threats_map_mobile/home/widgets/map.dart';
@@ -71,4 +71,49 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+void main() {
+  testWidgets('HomePage has correct initial state', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(
+      home: HomePage(),
+    ));
+
+    expect(find.byType(_HomePageState), findsOneWidget);
+    final _HomePageState state = tester.state(find.byType(_HomePageState));
+    expect(state._selectedIndex, isNull);
+
+    expect(state._isThreatsSelectionMenuOpen, isFalse);
+
+    expect(state.defaultIconSize, 34.0);
+  });
+
+  testWidgets('Tapping BottomNavigationBar updates _selectedIndex', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(
+      home: HomePage(),
+    ));
+
+    await tester.tap(find.byType(BottomNavigationBar).first);
+    await tester.pump();
+
+    final _HomePageState state = tester.state(find.byType(_HomePageState));
+    expect(state._selectedIndex, 0);
+  });
+
+  testWidgets('Pressing the FloatingActionButton toggles _isThreatsSelectionMenuOpen', (WidgetTester tester) async {
+    await tester.pumpWidget(const MaterialApp(
+      home: HomePage(),
+    ));
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pump();
+
+    final _HomePageState state = tester.state(find.byType(_HomePageState));
+    expect(state._isThreatsSelectionMenuOpen, isTrue);
+
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pump();
+
+    expect(state._isThreatsSelectionMenuOpen, isFalse);
+  });
 }
